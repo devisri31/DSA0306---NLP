@@ -1,0 +1,20 @@
+import nltk
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+
+nltk.download('punkt')
+nltk.download('wordnet')
+
+words = ["running", "runs", "ran", "better", "happily", "studies", "studying"]
+
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+
+print("Word\t\tStem\t\tLemma")
+for w in words:
+    s = stemmer.stem(w)
+    l = lemmatizer.lemmatize(w)
+    print(f"{w}\t\t{s}\t\t{l}")
+
+text = input("\nEnter a word for analysis: ")
+print("Stem:", stemmer.stem(text))
+print("Lemma:", lemmatizer.lemmatize(text))
