@@ -1,0 +1,60 @@
+from collections import defaultdict, Counter
+import random
+
+# Training data - simple corpus with tags
+train_data = [
+    [("The", "DT"), ("dog", "NN"), ("barks", "VB")],
+    [("The", "DT"), ("cat", "NN"), ("sleeps", "VB")],
+    [("A", "DT"), ("boy", "NN"), ("runs", "VB")],
+    [("A", "DT"), ("girl", "NN"), ("writes", "VB")],
+    [("The", "DT"), ("boy", "NN"), ("writes", "VB")],
+]
+
+# Calculate word -> most probable tag
+word_tag_counts = defaultdict(Counter)
+tag_counts = Counter()
+
+for sentence in train_data:
+    for word, tag in sentence:
+        word_tag_counts[word.lower()][tag] += 1
+        tag_counts[tag] += 1
+
+# Most probable tag for each word
+prob_model = {}
+for word, tag_counter in word_tag_counts.items():
+    prob_model[word] = tag_counter.most_common(1)[0][0]
+
+print("Probabilistic Model Learned:")
+for word, tag in prob_model.items():
+    print(f"{word} -> {tag}")
+
+print("\n" + "-"*40)
+
+# Test on new sentence
+def stochastic_tagger(sentence):
+    words = sentence.split()
+    tagged = []
+    for w in words:
+        # if word seen, give most probable tag, else guess NN
+        tag = prob_model.get(w.lower(), "NN")
+        tagged.append((w, tag))
+    return tagged
+
+sentence = input("Enter a sentence: ")
+result = stochastic_tagger(sentence)
+
+print("\nWord\t\tPOS Tag (Probability based)")
+print("-" * 40)
+for word, tag in result:
+    print(f"{word}\t\t{tag}")
+
+# Show probability calculation
+print("\nHow it assigned:")
+for word, tag in result:
+    if word.lower() in word_tag_counts:
+        total = sum(word_tag_counts[word.lower()].values())
+        count = word_tag_counts[word.lower()][tag]
+        prob = count / total
+        print(f"P({tag}|{word}) = {count}/{total} = {prob:.2f}")
+    else:
+        print(f"{word} is unknown -> assigned default tag NN")

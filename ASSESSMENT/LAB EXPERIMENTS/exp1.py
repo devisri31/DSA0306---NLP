@@ -1,0 +1,10 @@
+import re
+text = input("Enter text: ")
+email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+emails = re.findall(email_pattern, text)
+print("Emails found:", emails)
+phone_pattern = r'\b\d{10}\b'
+phones = re.findall(phone_pattern, text)
+print("Phone numbers found:", phones)
+if re.search(r'\band\b', text):
+    print("Word 'and' is present")
