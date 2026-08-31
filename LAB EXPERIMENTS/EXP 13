@@ -1,0 +1,54 @@
+grammar = {
+    'S': [['NP', 'VP']],
+    'NP': [['Det', 'N']],
+    'VP': [['V', 'NP']],
+    'Det': [['the'], ['a']],
+    'N': [['cat'], ['dog']],
+    'V': [['sees'], ['likes']]
+}
+
+def parse(symbol, words, pos):
+    if symbol not in grammar:
+        if pos < len(words) and symbol == words[pos]:
+            return pos + 1, symbol
+        return None, None
+
+    for rule in grammar[symbol]:
+        children = []
+        current = pos
+        success = True
+
+        for s in rule:
+            new_pos, tree = parse(s, words, current)
+
+            if tree is None:
+                success = False
+                break
+
+            children.append(tree)
+            current = new_pos
+
+        if success:
+            return current, (symbol, children)
+
+    return None, None
+
+def print_tree(tree, level=0):
+    if isinstance(tree, str):
+        print("  " * level + tree)
+    else:
+        symbol, children = tree
+        print("  " * level + symbol)
+
+        for child in children:
+            print_tree(child, level + 1)
+
+sentence = input("Enter sentence: ").lower().split()
+
+pos, tree = parse('S', sentence, 0)
+
+if tree and pos == len(sentence):
+    print("Parse Tree:")
+    print_tree(tree)
+else:
+    print("No parse tree found")
