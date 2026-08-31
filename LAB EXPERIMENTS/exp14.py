@@ -1,0 +1,46 @@
+grammar = {
+    'S': [['NP_s', 'VP_s'], ['NP_p', 'VP_p']],
+    'NP_s': [['Det_s', 'N_s']],
+    'NP_p': [['Det_p', 'N_p']],
+    'VP_s': [['V_s']],
+    'VP_p': [['V_p']],
+    'Det_s': [['the'], ['a']],
+    'Det_p': [['the']],
+    'N_s': [['cat'], ['dog']],
+    'N_p': [['cats'], ['dogs']],
+    'V_s': [['runs'], ['eats']],
+    'V_p': [['run'], ['eat']]
+}
+
+def parse(symbol, words, pos):
+    if symbol not in grammar:
+        if pos < len(words) and symbol == words[pos]:
+            return pos + 1
+        return None
+
+    for rule in grammar[symbol]:
+        current = pos
+        valid = True
+
+        for s in rule:
+            result = parse(s, words, current)
+
+            if result is None:
+                valid = False
+                break
+
+            current = result
+
+        if valid:
+            return current
+
+    return None
+
+sentence = input("Enter sentence: ").lower().split()
+
+result = parse('S', sentence, 0)
+
+if result == len(sentence):
+    print("Agreement is correct")
+else:
+    print("Agreement is incorrect")
