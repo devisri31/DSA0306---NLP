@@ -1,0 +1,13 @@
+def translate_en_to_fr(text):
+    d = {
+        "Hello": "Bonjour",
+        "how are you": "comment ça va",
+        "Machine learning is amazing": "L'apprentissage automatique est incroyable",
+        "Good morning": "Bonjour",
+        "I love natural language processing": "J'adore le traitement du langage naturel"
+    }
+    return d.get(text, "Traduction: " + text)
+
+print(translate_en_to_fr("Hello"))
+print(translate_en_to_fr("Machine learning is amazing"))
+print(translate_en_to_fr("Good morning"))
