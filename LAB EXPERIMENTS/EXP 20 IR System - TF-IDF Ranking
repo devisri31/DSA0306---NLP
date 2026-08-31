@@ -1,0 +1,40 @@
+import math
+from collections import Counter
+
+docs = [
+    "The cat sat on the mat",
+    "Dogs love to play with cats",
+    "The mat was placed near the door",
+    "Cats and dogs are common pets"
+]
+query = "cat and mat"
+
+def tfidf_search(docs, query):
+    all_words = set(" ".join(docs + [query]).lower().split())
+    N = len(docs)
+    idf = {}
+    for w in all_words:
+        df = sum(1 for d in docs if w in d.lower())
+        idf[w] = math.log(N / (1 + df))
+
+    def vector(text):
+        tf = Counter(text.lower().split())
+        return [tf[w] * idf[w] for w in all_words]
+
+    q_vec = vector(query)
+    scores = []
+    for i, d in enumerate(docs):
+        d_vec = vector(d)
+        dot = sum(a*b for a,b in zip(q_vec, d_vec))
+        mag_q = math.sqrt(sum(a*a for a in q_vec))
+        mag_d = math.sqrt(sum(b*b for b in d_vec))
+        sim = dot / (mag_q * mag_d) if mag_q * mag_d!= 0 else 0
+        scores.append((i, sim, d))
+
+    scores.sort(key=lambda x: x[1], reverse=True)
+    return scores
+
+results = tfidf_search(docs, query)
+print(f"Query: {query}\n")
+for idx, score, doc in results:
+    print(f"Doc {idx+1} | Score {score:.4f} | {doc}")
