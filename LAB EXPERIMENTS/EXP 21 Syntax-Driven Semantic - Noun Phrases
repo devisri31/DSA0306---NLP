@@ -1,0 +1,9 @@
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+text = "The quick brown fox jumps over the lazy dog in the beautiful garden."
+doc = nlp(text)
+
+print("NOUN PHRASE EXTRACTION")
+for chunk in doc.noun_chunks:
+    print(f"Phrase: {chunk.text:<25} | Root: {chunk.root.text:<10} | Meaning: {spacy.explain(chunk.root.pos_)}")
