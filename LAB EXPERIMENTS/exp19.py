@@ -1,0 +1,26 @@
+import nltk
+nltk.download('wordnet')
+nltk.download('punkt')
+nltk.download('stopwords')
+from nltk.corpus import wordnet as wn, stopwords
+from nltk.tokenize import word_tokenize
+
+def lesk(sent, word):
+    context = set(word_tokenize(sent.lower()))
+    best = None
+    max_overlap = 0
+    for syn in wn.synsets(word):
+        gloss = set(word_tokenize(syn.definition().lower()))
+        overlap = len(context & gloss)
+        if overlap > max_overlap:
+            max_overlap = overlap
+            best = syn
+    return best
+
+s1 = "I went to the bank to deposit money"
+print("Sentence:", s1)
+print("Best Sense:", lesk(s1, "bank"))
+
+s2 = "The river bank is full of trees"
+print("\nSentence:", s2)
+print("Best Sense:", lesk(s2, "bank"))

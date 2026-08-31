@@ -1,0 +1,19 @@
+import re
+
+def parse_fopc(expr):
+    expr = expr.strip()
+    print(f"\nInput: {expr}")
+    if expr.startswith("forall") or expr.startswith("exists"):
+        print("Type: Quantifier")
+    elif "implies" in expr:
+        print("Type: Implication")
+        print("Left:", expr.split("implies")[0], "| Right:", expr.split("implies")[1])
+    elif " and " in expr or " or " in expr:
+        print("Type: Connective")
+    elif re.match(r"^[A-Z][a-z]*\(.+\)$", expr):
+        print("Type: Atomic Predicate")
+    else:
+        print("Type: Invalid")
+
+for e in ["Loves(John,Mary)", "forall x (Human(x) implies Mortal(x))", "Human(John) and Mortal(John)"]:
+    parse_fopc(e)

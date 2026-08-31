@@ -1,0 +1,23 @@
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+text = "John bought a car. He loves it. Mary saw him driving it yesterday."
+doc = nlp(text)
+
+print(f"Text: {text}\n")
+print("REFERENCE RESOLUTION")
+
+entities = []
+for ent in doc.ents:
+    if ent.label_ == "PERSON":
+        entities.append(ent.text)
+for token in doc:
+    if token.pos_ == "NOUN" and token.text not in entities:
+        entities.append(token.text)
+
+print(f"Entities: {entities}")
+
+for i, token in enumerate(doc):
+    if token.pos_ == "PRON" and token.text.lower() in ["he","she","it","him","her","they"]:
+        prev = [t.text for t in doc[:i] if t.pos_ in ["PROPN","NOUN"]][-2:]
+        print(f"Pronoun '{token.text}' -> Refers to: {prev}")

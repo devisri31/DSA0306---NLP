@@ -1,0 +1,32 @@
+import re
+
+text = "Ramesh works at Infosys in Bangalore. Apple was founded by Steve Jobs in California on April 1, 1976."
+
+print("NAMED ENTITY RECOGNITION")
+print(f"Text: {text}\n")
+
+orgs = ["Infosys", "Apple", "Google"]
+persons = ["Ramesh", "Steve Jobs", "Sundar Pichai"]
+gpes = ["Bangalore", "California", "Cupertino", "Chennai"]
+
+words = text.replace(".", ".").split()
+
+print("--- ENTITIES ---")
+for w in words:
+    clean = w.strip(".,")
+    if clean in orgs:
+        print(f"{clean:<20} | ORGANIZATION")
+    elif clean in gpes:
+        print(f"{clean:<20} | GPE")
+    elif clean in ["Ramesh"]:
+        print(f"{clean:<20} | PERSON")
+
+bigrams = [f"{words[i]} {words[i+1]}" for i in range(len(words)-1)]
+for bg in bigrams:
+    bg_clean = bg.strip(".,")
+    if bg_clean in persons:
+        print(f"{bg_clean:<20} | PERSON")
+
+date_match = re.findall(r"April \d+, \d+", text)
+for d in date_match:
+    print(f"{d:<20} | DATE")
